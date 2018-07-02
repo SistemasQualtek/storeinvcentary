@@ -33,10 +33,10 @@ def upload_image_path(instancia, nombrearchivo):
             )
 
 
-class Venta(models.Model):
+class Log(models.Model):
 	fecha = models.DateField(auto_now_add=True)
 	producto = models.ForeignKey('Producto', null=True, blank=True, on_delete=models.CASCADE)
-	cantidad_vendida = models.IntegerField()
+	cantidad = models.IntegerField()
 
 	def __str__(self):
 		return self.producto
@@ -49,17 +49,17 @@ class Categoria(models.Model):
 
 
 class Producto(models.Model):
-	codigo_p = models.IntegerField(null=False, blank=False, unique=True)
-	descripcion = models.CharField(max_length=255, blank=True,null=True)
-	categoria = models.ForeignKey(Categoria, null=True, blank=True, on_delete=models.CASCADE)
-	unidades = models.IntegerField(null=False, blank=False)
-	precio = models.DecimalField(max_digits=9,decimal_places=2, null=False, blank=False)
-	cod_barras = models.ImageField(upload_to=upload_image_pathb, null=True, blank=True)
-	medida = models.CharField(max_length=50,blank=True,null=True)
-	unidad = models.CharField(max_length=50,blank=True,null=True)
-	cantidad_caja = models.PositiveIntegerField(blank=True, null=True)
-	cantidad_rb = models.PositiveIntegerField(blank=True, null=True)
-	ubicacion = models.CharField(max_length=50,blank=True,null=True)
-	costo = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=6)
-	def __str__(self):
-		return self.descripcion
+    codigo = models.IntegerField(null=False, blank=False, unique=True)
+    descripcion = models.CharField(max_length=255, blank=True,null=True)
+    unidad = models.CharField(max_length=50,blank=True,null=True)
+    existencia = models.IntegerField(null=False, blank=False)
+    proveedor = models.ForeignKey(Categoria, null=True, blank=True, on_delete=models.CASCADE)
+    precio = models.DecimalField(max_digits=9,decimal_places=2, null=False, blank=False)
+    cod_barras = models.ImageField(upload_to=upload_image_pathb, null=True, blank=True)
+    medida = models.CharField(max_length=50,blank=True,null=True)
+    cantidad_caja = models.PositiveIntegerField(blank=True, null=True)
+    cantidad_rb = models.PositiveIntegerField(blank=True, null=True)
+    ubicacion = models.CharField(max_length=50,blank=True,null=True)
+    costo = models.DecimalField(blank=True, null=True, max_digits=10, decimal_places=6)
+    def __str__(self):
+        return self.descripcion

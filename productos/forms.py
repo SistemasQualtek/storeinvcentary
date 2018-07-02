@@ -1,5 +1,5 @@
 from django import forms
-from .models import Producto, Categoria, Venta
+from .models import Producto, Categoria, Log
 from django.forms import ModelForm, Textarea, DateInput, NumberInput, SelectDateWidget
 
 class ProductoForm(forms.ModelForm):
@@ -17,7 +17,7 @@ class CategoriaForm(forms.ModelForm):
 
 class VentaForm(ModelForm):
     class Meta:
-        model = Venta
+        model = Log
         fields = '__all__'
         widgets = {
         	'fecha': SelectDateWidget(),

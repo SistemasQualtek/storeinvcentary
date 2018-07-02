@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.shortcuts import render, get_object_or_404, render_to_response
-from .models import Producto, Categoria, Venta
+from .models import Producto, Categoria, Log
 from .forms import ProductoForm, CategoriaForm, VentaForm
 import pprint
 from django.views.generic.edit import (
@@ -32,7 +32,7 @@ from django.db.models import Q, Sum
 import time
 
 def ProductoList(request):
-    latest_alcohol_list = Producto.objects.order_by('codigo_p')[:9]
+    latest_alcohol_list = Producto.objects.order_by('codigo')[:9]
     context = {
         'latest_alcohol_list':latest_alcohol_list
     }
@@ -46,9 +46,9 @@ def ProductoDetail(request,pk):
     if forma.is_valid():
         cantidad_vendida = forma.cleaned_data['cantidad_vendida']
         venta = Venta()
-        producto.unidades = producto.unidades - cantidad_vendida
+        producto.existencia = producto.existencia - cantidad
         venta.producto = producto
-        venta.cantidad_vendida = cantidad_vendida
+        venta.cantidad_vendida = cantidad
         producto.save()
         venta.save()
     context = {
@@ -68,9 +68,9 @@ def SalidaDetail(request,pk):
     if forma.is_valid():
         cantidad_vendida = forma.cleaned_data['cantidad_vendida']
         venta = Venta()
-        producto.unidades = producto.unidades - cantidad_vendida
+        producto.existencia = producto.existencia - cantidad
         venta.producto = producto
-        venta.cantidad_vendida = cantidad_vendida
+        venta.cantidad_vendida = cantidad
         producto.save()
         venta.save()
     context = {
@@ -110,15 +110,15 @@ def EntradaDetail(request,pk):
 class ProductoCreation(CreateView):
     model = Producto
     success_url = reverse_lazy('productos:producto_list')
-    fields = ['codigo_p', 'cod_barras' 'descripcion', 'categoria', 'unidades', 'precio']
+    fields = ['codigo', 'cod_barras' 'descripcion', 'proveedor', 'existencia', 'precio']
 class ProductoUpdate(UpdateView):
     model = Producto
     success_url = reverse_lazy('productos:producto_list')
-    fields = ['codigo_p', 'cod_barras', 'descripcion', 'categoria', 'unidades', 'precio']
+    fields = ['codigo', 'cod_barras', 'descripcion', 'proveedor', 'existencia', 'precio']
 class ProductoDelete(DeleteView):
     model = Producto
     success_url = reverse_lazy('productos:producto_list')
-    fields = ['codigo_p', 'cod_barras', 'descripcion', 'categoria', 'unidades', 'precio']
+    fields = ['codigo', 'cod_barras', 'descripcion', 'proveedor', 'existencia', 'precio']
 
 def principal(request):
     playera = Producto.objects.order_by('id')
@@ -220,7 +220,7 @@ def pdfgen(request):
     header = Paragraph("Reporte de Ventas General.", styles['Heading2'])
     courses.append(header)
     headings = ('Id', 'Producto', 'Cantidad Vendida', 'Fecha')
-    allcourses = [(p.id, p.producto, p.cantidad_vendida, p.fecha) for p in Venta.objects.all()]
+    allcourses = [(p.id, p.producto, p.cantidad, p.fecha) for p in Venta.objects.all()]
     # print allcourses
     t = Table([headings] + allcourses)
     t.setStyle(TableStyle(
@@ -258,7 +258,7 @@ def pdfdia(request):
     header = Paragraph("Reporte de Ventas de "+date, styles['Heading1'])
     courses.append(header)
     headings = ('Id', 'Producto', 'Cantidad Vendida','Subtotal')
-    allcourses = [(p.id, p.producto, p.cantidad_vendida,(p.producto.precio*p.cantidad_vendida)) for p in Venta.objects.filter(fecha = date)]
+    allcourses = [(p.id, p.producto, p.cantidad,(p.producto.precio*p.cantidad_vendida)) for p in Venta.objects.filter(fecha = date)]
     totalfinal = 0
     saldos = 0
     for p in Venta.objects.filter(fecha = date):

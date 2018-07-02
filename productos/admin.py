@@ -7,5 +7,5 @@ from .models import Producto
 # Register your models here.
 @admin.register(Producto)
 class AdminProducto(admin.ModelAdmin):
-	list_display = ('codigo_p','categoria','unidades','precio')
-	list_filter = ('categoria',)
+	list_display = ('codigo','proveedor','existencia','precio')
+	list_filter = ('proveedor',)
