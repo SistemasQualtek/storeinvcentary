@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+	{% block head_title %}Detalle del Producto{% endblock %}
+	{% block content %}
+	{% load bootstrap3 %}
+	{% load staticfiles %}
+	<!-- START PAGE CONTENT -->
+	<div class="content">
+	  <!-- START JUMBOTRON -->
+	  <div class="jumbotron" data-pages="parallax">
+	    <div class=" container-fluid container-fixed-lg sm-p-l-0 sm-p-r-0">
+	      <div class="inner">
+	        <!-- START BREADCRUMB -->
+	         <ol class="breadcrumb">
+             <li class="breadcrumb-item"><a href="{{list_almacen}}">Almacen</a>
+             <li class="breadcrumb-item active">Detalle de Producto {{ producto.codigo_p }} {{ producto.descripcion }}
+	        </ol>
+	        <!-- END BREADCRUMB -->
+	      </div>
+	    </div>
+	  </div>
+	  <!-- END JUMBOTRON -->
+	  <!-- START CONTAINER FLUID -->
+	  <div class="container-fluid container-fixed-lg">
+	    <!-- BEGIN PlACE PAGE CONTENT HERE -->
+	<div class="row">
+		<div class="col-sm-6 col-sm-offset-3">
+			<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+			<h1>Detalle</h1>
+			<h1>Vendedor {% firstof request.user.get_short_name request.user.get_username %}</h1>
+			<h4>Nombre: {{ producto.nombre }}</h4>
+			<h4>Descripcion: {{ producto.descripcion }}</h4>
+			<h4>Proveedor: {{ producto.categoria }}</h4>
+			<h1>Existencia: {{ producto.unidades }}</h1>
+			<p>
+				Precio: ${{ producto.precio }}
+			</p>
+			<h4>{{nombre}}</h4>
+			<form method="post" class="form">
+				{% csrf_token %}
+				<p>{{ forma.fecha }}</p>
+				<!-- <p>{{ forma.producto }}</p> -->
+				<p>{{ forma.cantidad_vendida}}</p>
+				<!-- <p><label for="number">Total: <input type="number" name="number" id="total1" value="0" readonly></label></p> -->
+	    <td><a href="{% url "productos:producto_list" %}"><input type="submit" value="Aceptar" class="btn btn-success"/></a></td>
+	</form>
+<div align="left">
+		{% buttons %}
+			{% if request.user.is_superuser %}
+			<a href="{% url "productos:edit" producto.id %}"><button type="submit" class="btn btn-success"><i class="fa fa-pencil" aria-hidden="true"></i> Editar</button></a>
+			<br>
+			<br>
+			<a href="{% url "productos:producto_list" %}">
+				<button type="submit" class="btn btn-success"><i class="fa fa-arrow-left" aria-hidden="true"></i> Regresar</button>
+			</a>
+			{% endif %}
+        {% endbuttons %}
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	    $('#id_cantidad_vendida').bind('input', function() {
+	        qty = $(this).val() // get the current value of the input field.
+	        document.getElementById("total1").value = ({{producto.precio}}*qty);
+	});
+	</script>
+{% endblock %}
+
+
+2017-03-17 15:06
